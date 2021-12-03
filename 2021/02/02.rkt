@@ -5,11 +5,14 @@
 (define input (parse-commands (string-split (port->string (open-input-file "./input.txt")) "\n")))
 
 (define (depth? command)
-  (or (equal? "up" (car command)) (equal? "down" (car command))))
+  (let ([direction (car command)]) (or (equal? "up" direction) (equal? "down" direction))))
 (define (forward? command)
   (equal? "forward" (car command)))
 (define (depth-operation command)
-  (if (equal? (car command) "up") - +))
+  (match (car command)
+    ["up" -]
+    ["down" +]
+    [_ assert-unreachable]))
 
 (define (calculate-position input x y)
   (define (move-x command)
