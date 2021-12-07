@@ -12,7 +12,7 @@
     (define costs (apply + (map (method start) input)))
     (if (eq? start max-pos)
       current-min
-      (cost (add1 start) (if (< costs current-min) costs current-min))))
+      (cost (add1 start) (min costs current-min))))
   (cost 0 +inf.0))
 
 (define (constant-rate start) (lambda (x) (abs (- x start))))
@@ -20,5 +20,5 @@
 
 (module+ test
   (require rackunit)
-  (check-equal? (cheapest-position constant-rate) 331067)
-  (check-equal? (cheapest-position non-constant-rate) 92881128))
+  (check-= (cheapest-position constant-rate) 331067 0)
+  (check-= (cheapest-position non-constant-rate) 92881128 0))
