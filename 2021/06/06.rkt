@@ -31,4 +31,4 @@
       (set! ages (vector-append ages (vector new-fishes)))
       (vector-set! ages 6 (+ (vector-ref ages 6) new-fishes))))
   ages)
-(foldl + 0 (vector->list (lanternfish-iter (list->vector input) 256)))
+(apply + (vector->list (lanternfish-iter (list->vector input) 256)))
