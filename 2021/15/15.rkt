@@ -10,8 +10,32 @@
        (values
         (append risks (map (lambda (risk x) (cons (cons x l) risk)) levels (range (string-length d))))
         (+ l 1))))))
+(define width (add1 (car last-pair)))
+(define height (add1 (cdr last-pair)))
+
+(define (repeat f n)
+  (define (iter g k)
+    (if (= k 0) g (iter (compose f g) (sub1 k))))
+  (iter identity n))
+(define (increment risk)
+  (let ([value (add1 risk)]) (if (= value 10) 1 value)))
+(define (explode risks amt)
+  (define (tesselate x y)
+    (define norm (+ x y))
+    (for/list ([(posn risk) (in-hash risks)])
+      (let ([new-x (+ (car posn) (* x width))] [new-y (+ (cdr posn) (* y height))])
+        (cons (cons new-x new-y) ((repeat increment norm) risk)))))
+  (for*/fold ([r (hash)]) ([i (in-range amt)] [j (in-range amt)])
+    (for/fold ([inner-r r]) ([d (in-list (tesselate i j))])
+      (hash-set inner-r (car d) (cdr d)))))
 
 (define (dijkstra risks [start (cons 0 0)])
+  (define target
+    (let* ([posns (hash-keys risks)]
+           [x (apply max (map car posns))]
+           [y (apply max (map cdr posns))])
+      (cons x y)))
+  (println target)
   (define Q (list->set (hash-keys risks)))
   (define distances
     (hash-copy (for/hash ([posn (in-hash-keys risks)])
@@ -36,14 +60,16 @@
     (if (set-empty? q)
         predecessors
         (let ([u (find-min q)])
-          (if (equal? u last-pair)
+          (if (equal? u target)
               predecessors
               (begin
                 (next-pos q u)
                 (make-prevs (set-remove q u)))))))
-  (define (make-path prevs [S null] [u last-pair] [risk 0])
+  (define (make-path prevs [S null] [u target] [risk 0])
     (if (and (not (hash-has-key? prevs u)) (not (equal? u start)))
-      (- risk (hash-ref risks start))
-      (make-path prevs (cons u S) (hash-ref prevs u) (+ risk (hash-ref risks u)))))
+        (- risk (hash-ref risks start))
+        (make-path prevs (cons u S) (hash-ref prevs u) (+ risk (hash-ref risks u)))))
   (make-path (make-prevs Q)))
-(dijkstra risks)
+
+(time (dijkstra risks))
+(time (dijkstra (explode risks 5)))
