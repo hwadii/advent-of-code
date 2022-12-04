@@ -1,14 +1,6 @@
 const std = @import("std");
 const print = std.debug.print;
 
-fn sliceFromFile(alloc: std.mem.Allocator, path: []const u8) ![]u8 {
-    const flags = std.fs.File.OpenFlags{};
-    const file = try std.fs.cwd().openFile(path, flags);
-    defer file.close();
-    const slice = try file.reader().readAllAlloc(alloc, (try file.stat()).size);
-    return slice;
-}
-
 const Move = enum(u32) {
     rock,
     paper,
@@ -132,7 +124,7 @@ const Outcome = enum {
     }
 };
 
-fn part1(input: []u8) !u32 {
+fn part1(input: []const u8) !u32 {
     var parts = std.mem.split(u8, input, "\n");
     var sum: u32 = 0;
     while (parts.next()) |part| {
@@ -145,7 +137,7 @@ fn part1(input: []u8) !u32 {
     return sum;
 }
 
-fn part2(input: []u8) !u32 {
+fn part2(input: []const u8) !u32 {
     var parts = std.mem.split(u8, input, "\n");
     var sum: u32 = 0;
     while (parts.next()) |part| {
@@ -159,27 +151,17 @@ fn part2(input: []u8) !u32 {
 }
 
 test "part1" {
-    const sample = try sliceFromFile(std.testing.allocator, "./sample.txt");
+    const sample = @embedFile("./sample.txt");
     try std.testing.expectEqual(part1(sample), 15);
 
-    const input = try sliceFromFile(std.testing.allocator, "./input.txt");
+    const input = @embedFile("./input.txt");
     try std.testing.expectEqual(part1(input), 13565);
-
-    defer {
-        std.testing.allocator.free(sample);
-        std.testing.allocator.free(input);
-    }
 }
 
 test "part2" {
-    const sample = try sliceFromFile(std.testing.allocator, "./sample.txt");
+    const sample = @embedFile("./sample.txt");
     try std.testing.expectEqual(part2(sample), 12);
 
-    const input = try sliceFromFile(std.testing.allocator, "./input.txt");
+    const input = @embedFile("./input.txt");
     try std.testing.expectEqual(part2(input), 12424);
-
-    defer {
-        std.testing.allocator.free(sample);
-        std.testing.allocator.free(input);
-    }
 }
