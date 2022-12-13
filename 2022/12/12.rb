@@ -1,5 +1,3 @@
-require 'matrix'
-require 'set'
 require 'rb_heap/heap'
 
 INPUT = File.readlines("./input.txt").map do |line|
@@ -31,18 +29,6 @@ def starts(input)
     end
   end
   values
-end
-
-def find_min(distances, q)
-  min = Float::INFINITY
-  ret = nil
-  q.each do |s|
-    if distances[s] <= min
-      min = distances[s]
-      ret = s
-    end
-  end
-  ret
 end
 
 def height(input, spot)
