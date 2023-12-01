@@ -1,2 +1,5 @@
 input*
 zig-cache
+bin/
+debug/
+obj/
