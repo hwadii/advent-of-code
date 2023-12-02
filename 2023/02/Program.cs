@@ -1,10 +1,10 @@
-﻿using System.Text.RegularExpressions;
+using System.Text.RegularExpressions;
 
 void Part1()
 {
     var path = Environment.GetCommandLineArgs()[1];
     var lines = Advent.Fs.Open().Lines();
-    var possible = lines.Select((line, id) => new Game(line).IsPossible() ? id + 1 : 0).Sum();
+    var possible = lines.Select((line, id) => new Game(line).Possible()).Sum();
     Console.WriteLine(possible);
 }
 
@@ -22,18 +22,18 @@ Part2();
 class Game
 {
     private static Cubes Configuration = new() { Red = 12, Green = 13, Blue = 14 };
+    private int _id = default;
     private string _line = string.Empty;
 
     public Game(string line)
     {
+        _id = int.Parse(Regex.Match(line, @"Game (\d+):").Groups[1].Value);
         _line = Regex.Replace(line, @"Game \d+: ", "");
     }
 
     public IEnumerable<Cubes> Cubes()
     {
-        var records = _line.Split("; ");
-        var cubes = new List<Cubes>();
-        return records.Select(record =>
+        return _line.Split("; ").Select(record =>
         {
             var red = 0;
             var green = 0;
@@ -45,16 +45,9 @@ class Game
         });
     }
 
-    public bool IsPossible()
+    public int Possible()
     {
-        foreach (var cube in Cubes())
-        {
-            if (!cube.IsCompatible(Configuration))
-            {
-                return false;
-            }
-        }
-        return true;
+        return Cubes().FirstOrDefault(cube => !cube.IsCompatible(Configuration)) == default ? _id : 0;
     }
 
     public int Sum()

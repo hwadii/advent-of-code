@@ -1,4 +1,4 @@
-﻿var line = string.Empty;
+var line = string.Empty;
 var calibration = Advent.Fs.Open().Lines().Select(line => new Line(line).Calibration()).Sum();
 Console.WriteLine(calibration);
 
