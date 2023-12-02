@@ -2,31 +2,22 @@
 
 void Part1()
 {
-    var line = string.Empty;
-    var id = 1;
-    var possible = 0;
-    while ((line = Console.ReadLine()) != null)
-    {
-        possible += new Game(line).IsPossible() ? id : 0;
-        id += 1;
-    }
+    var path = Environment.GetCommandLineArgs()[1];
+    var lines = Advent.Fs.Open().Lines();
+    var possible = lines.Select((line, id) => new Game(line).IsPossible() ? id + 1 : 0).Sum();
     Console.WriteLine(possible);
 }
 
 void Part2()
 {
-    var line = string.Empty;
-    var id = 1;
-    var power = 0;
-    while ((line = Console.ReadLine()) != null)
-    {
-        power += new Game(line).Sum();
-        id += 1;
-    }
+    var path = Environment.GetCommandLineArgs()[1];
+    var lines = Advent.Fs.Open().Lines();
+    var power = lines.Select(line => new Game(line).Sum()).Sum();
     Console.WriteLine(power);
 }
 
 Part1();
+Part2();
 
 class Game
 {

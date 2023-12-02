@@ -1,16 +1,11 @@
 ﻿var line = string.Empty;
-var calibration = 0;
-while ((line = Console.ReadLine()) != null)
-{
-    var l = new Line(line);
-    calibration += new Line(line).Calibration();
-}
+var calibration = Advent.Fs.Open().Lines().Select(line => new Line(line).Calibration()).Sum();
 Console.WriteLine(calibration);
 
 class Line
 {
     private readonly string _content;
-    private readonly static Dictionary<string, int> map = new()
+    private readonly static Dictionary<string, int> Map = new()
     {
         { "one", 1 },
         { "two", 2 },
@@ -31,7 +26,7 @@ class Line
     public int Calibration()
     {
         var nums = new SortedList<int, int>();
-        foreach (var num in map)
+        foreach (var num in Map)
         {
             var index = -1;
             if ((index = _content.IndexOf(num.Key)) > -1)
