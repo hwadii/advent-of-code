@@ -1,5 +1,7 @@
+using System.Diagnostics;
+
 var line = string.Empty;
-var calibration = Advent.Fs.Open().Lines().Select(line => new Line(line).Calibration()).Sum();
+var calibration = Advent.Fs.Open().Lines().Sum(line => new Line(line).Calibration());
 Console.WriteLine(calibration);
 
 class Line

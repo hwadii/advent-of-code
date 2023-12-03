@@ -2,7 +2,6 @@ using System.Text.RegularExpressions;
 
 void Part1()
 {
-    var path = Environment.GetCommandLineArgs()[1];
     var lines = Advent.Fs.Open().Lines();
     var possible = lines.Select((line, id) => new Game(line).Possible()).Sum();
     Console.WriteLine(possible);
@@ -10,7 +9,6 @@ void Part1()
 
 void Part2()
 {
-    var path = Environment.GetCommandLineArgs()[1];
     var lines = Advent.Fs.Open().Lines();
     var power = lines.Select(line => new Game(line).Sum()).Sum();
     Console.WriteLine(power);
@@ -47,7 +45,7 @@ class Game
 
     public int Possible()
     {
-        return Cubes().FirstOrDefault(cube => !cube.IsCompatible(Configuration)) == default ? _id : 0;
+        return Cubes().All(cube => cube.IsCompatible(Configuration)) ? 0 : _id;
     }
 
     public int Sum()

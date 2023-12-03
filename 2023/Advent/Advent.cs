@@ -20,7 +20,6 @@ public class File : IDisposable
     public Lines Lines()
     {
         return _reader.ReadToEnd().TrimEnd().Split("\n");
-
     }
 
     public void Dispose()
