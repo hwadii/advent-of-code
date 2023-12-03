@@ -25,6 +25,6 @@ public class File : IDisposable
 
     public void Dispose()
     {
-          _reader.Dispose();
+        _reader.Dispose();
     }
 }
