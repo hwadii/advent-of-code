@@ -2,16 +2,12 @@ using Position = (int X, int Y);
 
 void Part1()
 {
-    var parts = new List<Part>();
-    var schematic = new Schematic();
-    Console.WriteLine(schematic.Sum());
+    Console.WriteLine(new Schematic().Sum());
 }
 
 void Part2()
 {
-    var parts = new List<Part>();
-    var schematic = new Schematic();
-    Console.WriteLine(schematic.GearRatio());
+    Console.WriteLine(new Schematic().GearRatio());
 }
 
 Part1();
@@ -28,10 +24,9 @@ class Schematic
 
     public int Sum()
     {
-        var symbols = Symbols(c => !char.IsDigit(c) && c != '.');
+        var symbols = AllSymbols();
         var partsSum = 0;
-        var parts = Parts();
-        foreach (var part in parts)
+        foreach (var part in Parts())
         {
             foreach (var symbol in symbols)
             {
@@ -48,17 +43,18 @@ class Schematic
         var parts = Parts();
         foreach (var gear in symbols)
         {
-            var seen = 0;
+            var seen = false;
             var product = 1;
             foreach (var part in parts)
             {
                 if (part.IsAdjacent(gear))
                 {
-                    seen += 1;
                     product *= int.Parse(part.Number);
+                    if (seen) break;
+                    else seen = true;
                 }
             }
-            if (seen == 2) gearRatio += product;
+            gearRatio += product;
         }
         return gearRatio;
     }
@@ -94,7 +90,12 @@ class Schematic
         return Symbols(c => c == '*');
     }
 
-    public List<Symbol> Symbols(Func<char, bool> predicate)
+    public List<Symbol> AllSymbols()
+    {
+        return Symbols(c => char.IsSymbol(c) || char.IsPunctuation(c));
+    }
+
+    private List<Symbol> Symbols(Func<char, bool> predicate)
     {
         var symbols = new List<Symbol>();
         for (var j = 0; j < _lines.Count; j++)
@@ -102,6 +103,8 @@ class Schematic
             var chars = _lines[j].ToCharArray();
             for (var i = 0; i < chars.Count(); i++)
             {
+                if (chars[i] == '.') continue;
+
                 if (predicate(chars[i]))
                 {
                     symbols.Add(new Symbol(Value: chars[i], Position: (i, j)));
