@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Advent", "Advent\Advent.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "03", "03\03.csproj", "{350DC2CE-3F17-4EA8-A687-15A36FA782B1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "04", "04\04.csproj", "{62DBFC84-AFDD-4FF6-A285-8FD189C58604}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +38,9 @@ Global
 		{350DC2CE-3F17-4EA8-A687-15A36FA782B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{350DC2CE-3F17-4EA8-A687-15A36FA782B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{350DC2CE-3F17-4EA8-A687-15A36FA782B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{62DBFC84-AFDD-4FF6-A285-8FD189C58604}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{62DBFC84-AFDD-4FF6-A285-8FD189C58604}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{62DBFC84-AFDD-4FF6-A285-8FD189C58604}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{62DBFC84-AFDD-4FF6-A285-8FD189C58604}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
