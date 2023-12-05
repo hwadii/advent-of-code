@@ -10,7 +10,7 @@ void Part2()
     Console.WriteLine(alamanac.LocationRange());
 }
 
-Part1();
+// Part1();
 Part2();
 
 class Alamanac
@@ -31,7 +31,8 @@ class Alamanac
                 _maps.Add(current);
                 current = new Maps();
                 continue;
-            } else
+            }
+            else
             {
                 var nums = line.Split(" ");
                 current.Add(new Map() { Destination = long.Parse(nums[0]), Source = long.Parse(nums[1]), Length = long.Parse(nums[2]) });
@@ -42,24 +43,35 @@ class Alamanac
 
     public long LocationRange()
     {
-        var range = new List<long>();
+        var ranges = new List<Range>();
         var seeds = _seeds.ToList();
         for (var i = 0; i < seeds.Count - 1; i += 2)
         {
-            range = range.Concat(CreateRange(seeds[i], seeds[i + 1])).ToList();
+            ranges.Add(new Range(seeds[i], seeds[i] + seeds[i + 1]));
         }
-
-        var minLocation = long.MaxValue;
-        foreach (var seed in range)
-        {
-            var location = seed;
-            foreach (var map in _maps)
+        Advent.Debug.Print(ranges);
+        var min = long.MaxValue;
+        Parallel.ForEach(
+            ranges,
+            () => long.MaxValue,
+            (range, loop, min) =>
             {
-                location = map.Next(location);
-            }
-            minLocation = Math.Min(minLocation, location);
-        }
-        return minLocation;
+                for (var seed = range.Start; seed <= range.End; seed++)
+                {
+                    var location = seed;
+                    foreach (var map in _maps)
+                    {
+                        location = map.Next(location);
+                    }
+                    min = Math.Min(min, location);
+                }
+                return min;
+            },
+            result =>
+            {
+                Interlocked.Exchange(ref min, Math.Min(Interlocked.Read(ref min), result));
+            });
+        return min;
     }
 
     public long Location()
@@ -80,17 +92,6 @@ class Alamanac
     public List<Maps> Maps => _maps;
 
     public IEnumerable<long> Seeds => _seeds;
-
-    public static IEnumerable<long> CreateRange(long start, long count)
-    {
-        var limit = start + count;
-        Console.WriteLine(start);
-        while (start < limit)
-        {
-            yield return start;
-            start += 1;
-        }
-    }
 }
 
 class Map
@@ -133,3 +134,5 @@ class Maps
         return start;
     }
 }
+
+record struct Range(long Start, long End);
