@@ -1,6 +1,8 @@
 namespace Advent;
 
+using System.Text.Json;
 using Lines = IEnumerable<string>;
+
 
 public static class Fs
 {
@@ -17,13 +19,23 @@ public class File : IDisposable
         _reader = System.IO.File.OpenText(path);
     }
 
+    public string Text()
+    {
+        return _reader.ReadToEnd().TrimEnd();
+    }
+
     public Lines Lines()
     {
-        return _reader.ReadToEnd().TrimEnd().Split("\n");
+        return Text().Split("\n");
     }
 
     public void Dispose()
     {
         _reader.Dispose();
     }
+}
+
+public static class Debug
+{
+    public static void Print(object o) => Console.WriteLine(JsonSerializer.Serialize(o));
 }
