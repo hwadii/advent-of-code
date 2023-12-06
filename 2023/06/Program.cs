@@ -1,18 +1,17 @@
-using System.Diagnostics;
 using System.Text.RegularExpressions;
 
 void Part1()
 {
     var contents = Advent.Fs.Open().Lines().ToList();
     var sheet = Sheet.FromRaces(contents);
-    Debug.Assert(sheet.Product == 449820);
+    Advent.Debug.Assert(sheet.Product, 449820);
 }
 
 void Part2()
 {
     var contents = Advent.Fs.Open().Lines().ToList();
     var sheet = Sheet.FromRace(contents);
-    Debug.Assert(sheet.Product == 42250895);
+    Advent.Debug.Assert(sheet.Product, 42250895);
 }
 
 Part1();

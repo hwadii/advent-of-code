@@ -38,4 +38,18 @@ public class File : IDisposable
 public static class Debug
 {
     public static void Print(object o) => Console.WriteLine(JsonSerializer.Serialize(o));
+
+    public static void Assert(bool assertion)
+    {
+        System.Diagnostics.Debug.Assert(assertion);
+    }
+
+    public static void Assert<T>(T left, T right) where T : IEquatable<T>
+    {
+        if (left.Equals(right)) return;
+
+        Console.WriteLine($"left: {JsonSerializer.Serialize(left)}");
+        Console.WriteLine($"right: {JsonSerializer.Serialize(right)}");
+        System.Diagnostics.Debug.Assert(left.Equals(right));
+    }
 }
