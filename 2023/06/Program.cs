@@ -5,14 +5,14 @@ void Part1()
 {
     var contents = Advent.Fs.Open().Lines().ToList();
     var sheet = Sheet.FromRaces(contents);
-    Debug.Assert(sheet.Possible == 449820);
+    Debug.Assert(sheet.Product == 449820);
 }
 
 void Part2()
 {
     var contents = Advent.Fs.Open().Lines().ToList();
     var sheet = Sheet.FromRace(contents);
-    Debug.Assert(sheet.Possible == 42250895);
+    Debug.Assert(sheet.Product == 42250895);
 }
 
 Part1();
@@ -29,12 +29,12 @@ class Sheet
 
     public List<Race> Races => _races;
 
-    public long Possible => _races.Aggregate(1L, (total, r) => (total * r.Count()));
+    public long Product => _races.Aggregate(1L, (total, r) => total * r.Count());
 
     public static Sheet FromRaces(List<string> contents)
     {
-        var times = Regex.Replace(contents[0], @"Time:\s*", "").Split(" ", StringSplitOptions.RemoveEmptyEntries).Select(s => long.Parse(s)).ToList();
-        var distances = Regex.Replace(contents[1], @"Distance:\s*", "").Split(" ", StringSplitOptions.RemoveEmptyEntries).Select(s => long.Parse(s)).ToList();
+        var times = Regex.Replace(contents[0], @"Time:\s*", "").Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(s => long.Parse(s)).ToList();
+        var distances = Regex.Replace(contents[1], @"Distance:\s*", "").Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(s => long.Parse(s)).ToList();
         return new Sheet(times, distances);
     }
 
@@ -53,7 +53,7 @@ class Race
 
     public long Lower()
     {
-        for (long held = 0; held < Time; held++)
+        for (var held = 0; held < Time; held++)
         {
             var remaining = Time - held;
             var boat = new Boat() { Held = held };
