@@ -10,7 +10,7 @@ void Part2()
     Console.WriteLine(alamanac.LocationRange());
 }
 
-// Part1();
+Part1();
 Part2();
 
 class Alamanac
@@ -47,7 +47,7 @@ class Alamanac
         var seeds = _seeds.ToList();
         for (var i = 0; i < seeds.Count - 1; i += 2)
         {
-            ranges.Add(new Range(seeds[i], seeds[i] + seeds[i + 1]));
+            ranges.Add(new Range(seeds[i], seeds[i] + seeds[i + 1] - 1));
         }
         Advent.Debug.Print(ranges);
         var min = long.MaxValue;
