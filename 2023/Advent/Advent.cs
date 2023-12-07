@@ -1,7 +1,7 @@
 namespace Advent;
 
 using System.Text.Json;
-using Lines = IEnumerable<string>;
+using Lines = string[];
 
 
 public static class Fs
