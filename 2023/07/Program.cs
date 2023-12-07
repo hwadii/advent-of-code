@@ -31,12 +31,9 @@ class Game
 
     public int Winnings()
     {
-        var winnings = 0;
-        for (var i = 0; i < _cards.Count(); i++)
-        {
-            winnings += (i + 1) * _cards[i].Bid;
-        }
-        return winnings;
+        return _cards
+            .Select((value, i) => (i, value))
+            .Aggregate(0, (total, card) => total + (card.i + 1) * card.value.Bid);
     }
 
     public List<Card> Cards { get => _cards; set => _cards = value; }
@@ -75,35 +72,14 @@ class Card
 
     public CardType Type()
     {
-        var distincts = _hand.Distinct();
-        if (distincts.Count() == _hand.Count())
-        {
-            return CardType.HighCard;
-        }
-        if (distincts.Count() == _hand.Count() - 1)
-        {
-            return CardType.OnePair;
-        }
-        if (distincts.Count() == 1)
-        {
-            return CardType.FiveOfKind;
-        }
-        if (_tally.Count(g => g.Value == 2) == 2)
-        {
-            return CardType.TwoPair;
-        }
-        else if (_tally.Count(g => g.Value == 3) == 1 && _tally.Count(g => g.Value == 2) == 1)
-        {
-            return CardType.FullHouse;
-        }
-        else if (_tally.Count(g => g.Value == 3) == 1)
-        {
-            return CardType.ThreeOfKind;
-        }
-        else
-        {
-            return CardType.FourOfKind;
-        }
+        var distincts = _hand.Distinct().Count();
+        if (distincts == 1) return CardType.FiveOfKind;
+        if (distincts == 5) return CardType.HighCard;
+        if (distincts == 4) return CardType.OnePair;
+        var max = _tally.Max(g => g.Value);
+        if (max == 4) return CardType.FourOfKind;
+        if (_tally.Count(g => g.Value == 3) == 1 && _tally.Count(g => g.Value == 2) == 1) return CardType.FullHouse;
+        return max == 3 ? CardType.ThreeOfKind : CardType.TwoPair;
     }
 
     public CardType BestType()
@@ -184,7 +160,7 @@ class Card
 
     public static int CompareBestType(Card card, Card other)
     {
-        var comparison = card.BestType().CompareTo(other!.BestType());
+        var comparison = card.BestType().CompareTo(other.BestType());
         if (comparison == 0)
         {
             foreach (var value in card.Hand.Zip(other.Hand))
