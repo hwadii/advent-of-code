@@ -26,13 +26,15 @@ class History
 
     public int Next()
     {
-        var lasts = new List<int>() { _nums.Last };
+        var next = _nums.Last;
+
         while (!_nums.Zeroes)
         {
             _nums = _nums.Next();
-            lasts.Add(_nums.Last);
+            next += _nums.Last;
         }
-        return lasts.Sum();
+
+        return next;
     }
 
     public Sequence Nums => _nums;
