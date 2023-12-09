@@ -84,8 +84,7 @@ class Path
                 _ => throw new ArgumentOutOfRangeException(),
             };
             steps += 1;
-            if (i == directions.Length - 1) i = 0;
-            else i += 1;
+            i = (i + 1) % directions.Length;
         }
         return steps;
     }
