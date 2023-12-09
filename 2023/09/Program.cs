@@ -8,7 +8,7 @@ void Part1()
 void Part2()
 {
     var contents = Advent.Fs.Open().Lines();
-    var sum = contents.Sum(c => new History(c).Previous());
+    var sum = contents.Sum(c => new History(string.Join(' ', Enumerable.Reverse(c.Split(' ')))).Next());
     Advent.Debug.Assert(sum, 1089);
 }
 
@@ -33,17 +33,6 @@ class History
             lasts.Add(_nums.Last);
         }
         return lasts.Sum();
-    }
-
-    public int Previous()
-    {
-        var firsts = new List<int>() { _nums.First };
-        while (!_nums.Zeroes)
-        {
-            _nums = _nums.Next();
-            firsts.Insert(0, _nums.First);
-        }
-        return firsts.Aggregate((total, n) => n - total);
     }
 
     public Sequence Nums => _nums;
