@@ -70,10 +70,10 @@ class Maze
             for (var j = minY; j <= maxY; j++)
             {
                 var tile = Get(i, j);
-                if (visited.Contains(Get(i, j))) continue;
+                if (visited.Contains(tile)) continue;
                 var counter = 0;
                 var x = tile.Position.X;
-                foreach (var _ in Enumerable.Range(0, maxX))
+                foreach (var _ in Enumerable.Range(0, tile.Position.X))
                 {
                     x -= 1;
                     if (x < 0) break;
