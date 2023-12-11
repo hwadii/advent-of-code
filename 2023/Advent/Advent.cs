@@ -37,7 +37,7 @@ public class File : IDisposable
 
 public static class Debug
 {
-    public static void Print(object o) => Console.WriteLine(JsonSerializer.Serialize(o, new JsonSerializerOptions() { IncludeFields = true }));
+    public static void Print(object o) => Console.WriteLine(JsonSerializer.Serialize(o, new JsonSerializerOptions() { IncludeFields = true, WriteIndented = true }));
 
     public static void Assert(bool assertion)
     {
