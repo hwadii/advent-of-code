@@ -1,0 +1,7 @@
+List(Stone: 125, Stone: 17) -> 3 2 -> 2
+List(Stone: 253000, Stone: 1, Stone: 7) -> 6 1 7 -> 3
+List(Stone: 253, Stone: 0, Stone: 2024, Stone: 14168) -> 4
+List(Stone: 512072, Stone: 1, Stone: 20, Stone: 24, Stone: 28676032) -> 5
+List(Stone: 512, Stone: 72, Stone: 2024, Stone: 2, Stone: 0, Stone: 2, Stone: 4, Stone: 2867, Stone: 6032) -> 9
+List(Stone: 1036288, Stone: 7, Stone: 2, Stone: 20, Stone: 24, Stone: 4048, Stone: 1, Stone: 4048, Stone: 8096, Stone: 28, Stone: 67, Stone: 60, Stone: 32) ->
+List(Stone: 2097446912, Stone: 14168, Stone: 4048, Stone: 2, Stone: 0, Stone: 2, Stone: 4, Stone: 40, Stone: 48, Stone: 2024, Stone: 40, Stone: 48, Stone: 80, Stone: 96, Stone: 2, Stone: 8, Stone: 6, Stone: 7, Stone: 6, Stone: 0, Stone: 3, Stone: 2)
