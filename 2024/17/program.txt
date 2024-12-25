@@ -1,0 +1,14 @@
+Register A: 22817223
+Register B: 0
+Register C: 0
+
+Program: 2,4,1,2,7,5,4,5,0,3,1,7,5,5,3,0
+
+b = a % 8
+b = b ^ 2
+c = a >> b
+b = b ^ c
+a = a >> 3
+b = b ^ 7
+out(b % 8) => b is 0 or 8
+if a != 0 then jump 0

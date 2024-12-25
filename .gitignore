@@ -6,3 +6,4 @@ obj/
 .scala-build/
 .bsp/
 .metals/
+/2024/.direnv/

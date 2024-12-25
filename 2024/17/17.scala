@@ -39,7 +39,7 @@ class Program(val registers: ArrayBuffer[Register], val ops: List[Long]):
       assert(insns % 2 == 0)
       val insn = Instruction.fromOrdinal(ops(insns).toInt)
       if (insn == Instruction.Adv) {
-        registers(0).value = (registers(0).value / pow(2, resolveOp(ops(insns + 1)).toDouble)).toLong
+        registers(0).value = registers(0).value >> resolveOp(ops(insns + 1))
         insns += 2
       } else if (insn == Instruction.Bxl) {
         registers(1).value = registers(1).value ^ ops(insns + 1)
@@ -57,10 +57,10 @@ class Program(val registers: ArrayBuffer[Register], val ops: List[Long]):
         result.addOne(resolveOp(ops(insns + 1)) % 8)
         insns += 2
       } else if (insn == Instruction.Bdv) {
-        registers(1).value = (registers(0).value / pow(2, resolveOp(ops(insns + 1)).toDouble)).toLong
+        registers(1).value = registers(0).value >> resolveOp(ops(insns + 1))
         insns += 2
       } else {
-        registers(2).value = (registers(0).value / pow(2, resolveOp(ops(insns + 1)).toDouble)).toLong
+        registers(2).value = registers(0).value >> resolveOp(ops(insns + 1))
         insns += 2
       }
     }
@@ -100,18 +100,28 @@ object Register:
 
 def part1(path: String): String =
   val contents = readFile(path)
-  Program.parse(contents(0), contents(1)).execute
+  val program = Program.parse(contents(0), contents(1))
+  println(program.registers)
+  println(program.ops)
+  program.execute
 
 def part2(path: String): Int =
   val contents = readFile(path)
-  val program = Program.parse(contents(0), contents(1))
-  var start = program.registers(0).value
+  var program = Program.parse(contents(0), contents(1))
+  // var start = 35_100_000_000_000L
+  // 245_900_000_000_000
+  var start = 193_514_046_020_000L
   var out = program.execute
   val expected = program.ops.mkString(",")
-  println(start)
-  while (out != expected) {
-    start = start + 1
-    out = Program(ArrayBuffer(Register(start), Register(0), Register(0)), program.ops).execute
-  }
-  println(start)
+  // while (out != expected) {
+  //   start = start + 1
+  //   val p = Program(ArrayBuffer(Register(start), Register(0), Register(0)), program.ops)
+  //   out = p.execute
+  //   println(out)
+    // println(start)
+    // println(start.toOctalString)
+    // println(out)
+    // println(out.split(",").length)
+  // }
+  println(2412754503175530L.toOctalString)
   0
