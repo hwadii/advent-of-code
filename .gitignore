@@ -7,3 +7,4 @@ obj/
 .bsp/
 .metals/
 /2024/.direnv/
+target/
