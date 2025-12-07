@@ -8,3 +8,4 @@ obj/
 .metals/
 /2024/.direnv/
 target/
+/2025/.direnv/
