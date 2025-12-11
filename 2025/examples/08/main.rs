@@ -1,17 +1,16 @@
-use std::{collections::{BTreeSet, HashMap, HashSet}, process::Termination};
-use itertools::Itertools;
 use disjoint_sets::UnionFind;
+use itertools::Itertools;
 
 const SAMPLE: &str = include_str!("sample.txt");
 const INPUT: &str = include_str!("input.txt");
 
 fn main() {
     dbg!(part1());
-    // dbg!(part2());
+    dbg!(part2());
 }
 
 fn part1() -> u64 {
-    let mut junction_boxes = INPUT
+    let junction_boxes = INPUT
         .lines()
         .map(|line| {
             let coords = line
@@ -25,45 +24,80 @@ fn part1() -> u64 {
             }
         })
         .collect::<Vec<_>>();
-    let mut uf = UnionFind::new(junction_boxes.len());
-    let mut connections = 0;
-    while connections < 1000 {
-        let mut next_closest: Option<(usize, usize)> = None;
-        let mut distance = usize::MAX;
-        for (i, jb) in junction_boxes.iter().enumerate() {
-            let closest = junction_boxes
+    let mut edges = junction_boxes
+        .iter()
+        .enumerate()
+        .flat_map(|(i, _)| {
+            junction_boxes
                 .iter()
                 .enumerate()
-                .filter(|(j, _)| !uf.equiv(i, *j))
-                .min_by_key(|(_, other)| jb.distance(other));
-            if let Some(c) = closest {
-                let new_distance = jb.distance(c.1);
-                if next_closest.is_some() {
-                    if new_distance < distance {
-                        next_closest = Some((i, c.0));
-                        distance = new_distance;
-                    }
-                } else {
-                    next_closest = Some((i, c.0));
-                    distance = new_distance;
-                }
-            }
-        }
-        if let Some(nc) = next_closest {
-            uf.union(nc.0, nc.1);
-        }
-        // dbg!(connections);
-        dbg!(uf.to_vec().into_iter().counts().iter().k_largest(3).map(|c| c.1).product::<usize>());
+                .filter_map(move |(j, _)| if i != j { Some((i, j)) } else { None })
+        })
+        .collect::<Vec<_>>();
+    edges.sort_by_key(|edge| junction_boxes[edge.0].distance(&junction_boxes[edge.1]));
+    edges.dedup_by(|edge, other| edge.0 == other.1 && edge.1 == other.0);
+    let mut uf = UnionFind::<usize>::new(junction_boxes.len());
+    let mut connections = 0;
+    for edge in &edges {
+        uf.union(edge.0, edge.1);
         connections += 1;
+        if connections == 1000 {
+            break;
+        }
     }
-    // let mut sizes = (0..junction_boxes.len()).map(|i| uf.get(i).size()).collect::<Vec<_>>();
-    // sizes.sort();
-    // dbg!(&sizes);
-    // dbg!(uf);
-    // dbg!(indices.iter().map(|i| &junction_boxes[*i]).collect::<Vec<_>>());
-    // let mut connections = 0;
-    // let mut circuits = Vec::<HashSet<JunctionBox>>::new();
-    0
+    let mut counts = uf
+        .to_vec()
+        .iter()
+        .counts()
+        .into_iter()
+        .map(|pair| (*pair.0, pair.1))
+        .collect::<Vec<_>>();
+    counts.sort_by_key(|c| c.1);
+    counts
+        .iter()
+        .rev()
+        .take(3)
+        .map(|pair| pair.1 as u64)
+        .product::<u64>()
+}
+
+fn part2() -> u64 {
+    let junction_boxes = INPUT
+        .lines()
+        .map(|line| {
+            let coords = line
+                .split(",")
+                .filter_map(|n| n.parse::<usize>().ok())
+                .collect::<Vec<_>>();
+            JunctionBox {
+                x: coords[0],
+                y: coords[1],
+                z: coords[2],
+            }
+        })
+        .collect::<Vec<_>>();
+    let mut edges = junction_boxes
+        .iter()
+        .enumerate()
+        .flat_map(|(i, _)| {
+            junction_boxes
+                .iter()
+                .enumerate()
+                .filter_map(move |(j, _)| if i != j { Some((i, j)) } else { None })
+        })
+        .collect::<Vec<_>>();
+    edges.sort_by_key(|edge| junction_boxes[edge.0].distance(&junction_boxes[edge.1]));
+    edges.dedup_by(|edge, other| edge.0 == other.1 && edge.1 == other.0);
+    let mut uf = UnionFind::<usize>::new(junction_boxes.len());
+    let mut connecting_edge = edges[0];
+    for edge in &edges {
+        uf.union(edge.0, edge.1);
+        if (0..junction_boxes.len()).map(|i| uf.find(i)).all_equal() {
+            connecting_edge = edge.clone();
+            break;
+        }
+    }
+    junction_boxes[connecting_edge.0].x as u64 * junction_boxes[connecting_edge.1].x as u64
 }
 
 #[derive(Debug, PartialEq, Eq, Hash, Clone)]
