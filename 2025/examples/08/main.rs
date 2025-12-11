@@ -1,4 +1,6 @@
-use std::collections::{BTreeSet, HashMap, HashSet};
+use std::{collections::{BTreeSet, HashMap, HashSet}, process::Termination};
+use itertools::Itertools;
+use disjoint_sets::UnionFind;
 
 const SAMPLE: &str = include_str!("sample.txt");
 const INPUT: &str = include_str!("input.txt");
@@ -9,7 +11,7 @@ fn main() {
 }
 
 fn part1() -> u64 {
-    let mut junction_boxes = SAMPLE
+    let mut junction_boxes = INPUT
         .lines()
         .map(|line| {
             let coords = line
@@ -23,24 +25,42 @@ fn part1() -> u64 {
             }
         })
         .collect::<Vec<_>>();
-    let mut circuits = Vec::<HashSet<JunctionBox>>::new();
-    for jb in &junction_boxes {
-        let closest_box = junction_boxes
-            .iter()
-            .filter(|other| jb != *other)
-            .min_by_key(|a| a.distance(jb))
-            .unwrap();
-        circuits.push(HashSet::from([jb.clone(), closest_box.clone()]));
-        // dbg!(closest_box);
-    }
-    // circuits.sort_by_key(|circuit| circuit..distance(circuit[1]));
+    let mut uf = UnionFind::new(junction_boxes.len());
     let mut connections = 0;
-    while connections < 10 {
-        for (i, circuit) in circuits.iter_mut().enumerate() {
+    while connections < 1000 {
+        let mut next_closest: Option<(usize, usize)> = None;
+        let mut distance = usize::MAX;
+        for (i, jb) in junction_boxes.iter().enumerate() {
+            let closest = junction_boxes
+                .iter()
+                .enumerate()
+                .filter(|(j, _)| !uf.equiv(i, *j))
+                .min_by_key(|(_, other)| jb.distance(other));
+            if let Some(c) = closest {
+                let new_distance = jb.distance(c.1);
+                if next_closest.is_some() {
+                    if new_distance < distance {
+                        next_closest = Some((i, c.0));
+                        distance = new_distance;
+                    }
+                } else {
+                    next_closest = Some((i, c.0));
+                    distance = new_distance;
+                }
+            }
         }
+        if let Some(nc) = next_closest {
+            uf.union(nc.0, nc.1);
+        }
+        // dbg!(connections);
+        dbg!(uf.to_vec().into_iter().counts().iter().k_largest(3).map(|c| c.1).product::<usize>());
         connections += 1;
     }
-    dbg!(circuits);
+    // let mut sizes = (0..junction_boxes.len()).map(|i| uf.get(i).size()).collect::<Vec<_>>();
+    // sizes.sort();
+    // dbg!(&sizes);
+    // dbg!(uf);
+    // dbg!(indices.iter().map(|i| &junction_boxes[*i]).collect::<Vec<_>>());
     // let mut connections = 0;
     // let mut circuits = Vec::<HashSet<JunctionBox>>::new();
     0
@@ -54,11 +74,9 @@ struct JunctionBox {
 }
 
 impl JunctionBox {
-    fn distance(&self, other: &JunctionBox) -> u64 {
-        f64::sqrt(
-            (self.x as i64 - other.x as i64).pow(2) as f64
-                + (self.y as i64 - other.y as i64).pow(2) as f64
-                + (self.z as i64 - other.z as i64).pow(2) as f64,
-        ) as u64
+    fn distance(&self, other: &JunctionBox) -> usize {
+        ((self.x as i64 - other.x as i64).pow(2)
+            + (self.y as i64 - other.y as i64).pow(2)
+            + (self.z as i64 - other.z as i64).pow(2)) as usize
     }
 }
