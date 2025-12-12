@@ -1,0 +1,15 @@
+digraph {
+  dac -> {fff}
+  fff -> {ggg hhh}
+  fft -> {ccc}
+  ddd -> {hub}
+  hub -> {fff}
+  ggg -> {out}
+  eee -> {dac}
+  ccc -> {ddd eee}
+  hhh -> {out}
+  svr -> {aaa bbb}
+  aaa -> {fft}
+  bbb -> {tty}
+  tty -> {ccc}
+}
